@@ -494,10 +494,14 @@ const RecruiterDashboard = () => {
           <Tabs defaultValue="search" className="flex-1 flex flex-col">
             {/* Enhanced Top Tabs */}
             <div className="border-b bg-white px-6 py-4">
-              <TabsList className="grid w-full max-w-3xl grid-cols-4">
+              <TabsList className="grid w-full max-w-4xl grid-cols-5">
                 <TabsTrigger value="search" className="flex items-center space-x-2">
                   <Search className="w-4 h-4" />
                   <span>Search Candidates</span>
+                </TabsTrigger>
+                <TabsTrigger value="ai-ranking" className="flex items-center space-x-2">
+                  <Brain className="w-4 h-4" />
+                  <span>AI Ranking</span>
                 </TabsTrigger>
                 <TabsTrigger value="outreach" className="flex items-center space-x-2 relative">
                   <MessageSquare className="w-4 h-4" />
@@ -647,6 +651,10 @@ const RecruiterDashboard = () => {
                   )}
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="ai-ranking" className="flex-1 p-6 overflow-y-auto">
+              <AIPoweredRanking />
             </TabsContent>
 
             <TabsContent value="outreach" className="flex-1 overflow-y-auto">
