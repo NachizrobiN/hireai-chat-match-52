@@ -16,6 +16,8 @@ import ResumeParser from '@/components/recruiter/ai-tools/ResumeParser';
 import SkillAssessment from '@/components/recruiter/ai-tools/SkillAssessment';
 import InterviewQuestions from '@/components/recruiter/ai-tools/InterviewQuestions';
 import BiasDetection from '@/components/recruiter/ai-tools/BiasDetection';
+import ExtensiveFilters from '@/components/recruiter/ExtensiveFilters';
+import AIPoweredRanking from '@/components/recruiter/AIPoweredRanking';
 
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,6 +145,11 @@ const RecruiterDashboard = () => {
   };
 
   const candidatesToShow = searchQuery || selectedFilters.length > 0 ? filteredCandidates : mockCandidates;
+
+  const handleExtensiveFiltersApply = (filters: any) => {
+    console.log('Extensive filters applied:', filters);
+    // Apply extensive filtering logic here
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -293,6 +300,7 @@ const RecruiterDashboard = () => {
                         onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                       />
                     </div>
+                    <ExtensiveFilters onFiltersApply={handleExtensiveFiltersApply} />
                     <Button variant="outline" className="h-12 px-6">
                       <Upload className="w-4 h-4 mr-2" />
                       Upload JD
@@ -475,36 +483,7 @@ const RecruiterDashboard = () => {
             </TabsContent>
 
             <TabsContent value="ranking" className="flex-1 p-6 overflow-y-auto">
-              <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">AI-Powered Candidate Ranking</h1>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Semantic Matching</CardTitle>
-                      <CardDescription>Advanced AI matching beyond keyword search</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button className="w-full">
-                        <Brain className="w-4 h-4 mr-2" />
-                        Launch Matching Engine
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Candidate Comparison</CardTitle>
-                      <CardDescription>Side-by-side comparison with insights</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button className="w-full">
-                        <Users className="w-4 h-4 mr-2" />
-                        Compare Candidates
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+              <AIPoweredRanking />
             </TabsContent>
           </Tabs>
         </div>
