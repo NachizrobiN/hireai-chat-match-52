@@ -18,7 +18,7 @@ const AnalyticsDashboard = () => {
   const [department, setDepartment] = useState('all');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -130,7 +130,7 @@ const AnalyticsDashboard = () => {
       </div>
 
       {/* Main Analytics Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="efficiency">Efficiency</TabsTrigger>
