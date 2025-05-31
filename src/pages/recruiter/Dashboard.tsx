@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase, BarChart3 } from 'lucide-react';
+import { Search, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase, BarChart3, Brain } from 'lucide-react';
 import RecruiterFilters from '@/components/RecruiterFilters';
 import AnalyticsDashboard from '@/components/recruiter/AnalyticsDashboard';
+import CandidateRanking from '@/components/recruiter/CandidateRanking';
 
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -150,10 +150,14 @@ const RecruiterDashboard = () => {
         <div className="flex-1 flex flex-col">
           <Tabs defaultValue="search" className="flex-1 flex flex-col">
             <div className="border-b bg-white px-6 py-4">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsList className="grid w-full max-w-2xl grid-cols-3">
                 <TabsTrigger value="search" className="flex items-center space-x-2">
                   <Search className="w-4 h-4" />
                   <span>Search Candidates</span>
+                </TabsTrigger>
+                <TabsTrigger value="ranking" className="flex items-center space-x-2">
+                  <Brain className="w-4 h-4" />
+                  <span>AI Ranking</span>
                 </TabsTrigger>
                 <TabsTrigger value="analytics" className="flex items-center space-x-2">
                   <BarChart3 className="w-4 h-4" />
@@ -262,6 +266,10 @@ const RecruiterDashboard = () => {
                   </div>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="ranking" className="flex-1 p-6 overflow-y-auto">
+              <CandidateRanking />
             </TabsContent>
 
             <TabsContent value="analytics" className="flex-1 p-6 overflow-y-auto">
