@@ -18,6 +18,8 @@ import InterviewQuestions from '@/components/recruiter/ai-tools/InterviewQuestio
 import BiasDetection from '@/components/recruiter/ai-tools/BiasDetection';
 import ExtensiveFilters from '@/components/recruiter/ExtensiveFilters';
 import AIPoweredRanking from '@/components/recruiter/AIPoweredRanking';
+import CandidateCard from '@/components/recruiter/CandidateCard';
+import CandidateSortOptions from '@/components/recruiter/CandidateSortOptions';
 
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +27,9 @@ const RecruiterDashboard = () => {
   const [workflowsOpen, setWorkflowsOpen] = useState(false);
   const [filteredCandidates, setFilteredCandidates] = useState<any[]>([]);
   const [shortlistedCandidates, setShortlistedCandidates] = useState<string[]>([]);
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState('matchScore');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
   const [workflows] = useState([
     { id: '1', name: 'Frontend Developer Hiring', stage: 'Screening', candidates: 12 },
@@ -35,60 +40,171 @@ const RecruiterDashboard = () => {
 
   const [mockCandidates] = useState([
     {
-      id: 1,
+      id: '1',
       name: 'Sarah Chen',
       role: 'Senior Frontend Developer',
+      title: 'Senior Frontend Developer',
       experience: '5 years',
       location: 'San Francisco, CA',
-      skills: ['React', 'TypeScript', 'Node.js', 'GraphQL'],
+      skills: ['React', 'TypeScript', 'Node.js', 'GraphQL', 'AWS', 'Docker'],
+      topMatchedSkills: ['React', 'TypeScript', 'GraphQL'],
+      skillGaps: ['Kubernetes'],
       score: 95,
+      matchScore: 95,
       avatar: '/placeholder.svg',
       summary: 'Experienced frontend developer with expertise in React ecosystem and modern web technologies.',
+      aiInsight: 'Perfect fit for senior role requiring both technical depth and leadership experience',
       email: 'sarah.chen@email.com',
       phone: '+1 (555) 123-4567',
-      status: 'Available'
+      status: 'new' as const,
+      company: 'TechCorp Inc.',
+      education: 'BS Computer Science, Stanford',
+      source: 'LinkedIn',
+      appliedDate: '2024-01-15',
+      availability: 'Immediately',
+      seniorityLevel: 'Senior',
+      lastContact: undefined,
+      matchReasons: [
+        'Strong React and TypeScript expertise matching role requirements',
+        'Leadership experience managing frontend teams',
+        'Modern tech stack experience with GraphQL and AWS'
+      ],
+      considerations: [
+        'Limited Kubernetes experience for DevOps requirements'
+      ],
+      projects: [
+        {
+          name: 'E-commerce Platform Redesign',
+          description: 'Led frontend rebuild using React and TypeScript, improving performance by 40%',
+          technologies: ['React', 'TypeScript', 'Redux', 'Webpack']
+        }
+      ]
     },
     {
-      id: 2,
+      id: '2',
       name: 'Michael Rodriguez',
       role: 'Full Stack Engineer',
+      title: 'Full Stack Engineer',
       experience: '4 years',
       location: 'Austin, TX',
-      skills: ['React', 'Python', 'PostgreSQL', 'AWS'],
+      skills: ['React', 'Python', 'PostgreSQL', 'AWS', 'Kubernetes'],
+      topMatchedSkills: ['React', 'Python', 'AWS'],
+      skillGaps: ['GraphQL', 'TypeScript'],
       score: 92,
+      matchScore: 92,
       avatar: '/placeholder.svg',
       summary: 'Full-stack engineer with strong background in modern web applications and cloud infrastructure.',
+      aiInsight: 'Strong full-stack capability with excellent cloud infrastructure experience',
       email: 'michael.r@email.com',
       phone: '+1 (555) 234-5678',
-      status: 'Available'
+      status: 'shortlisted' as const,
+      company: 'StartupXYZ',
+      education: 'MS Software Engineering, UT Austin',
+      source: 'Company Website',
+      appliedDate: '2024-01-14',
+      availability: '2 weeks',
+      seniorityLevel: 'Mid-Level',
+      lastContact: '2024-01-20',
+      matchReasons: [
+        'Full-stack experience with React and Python',
+        'Strong cloud infrastructure background with AWS and Kubernetes',
+        'Startup experience with rapid development cycles'
+      ],
+      considerations: [
+        'May need GraphQL training for our API architecture',
+        'TypeScript experience would strengthen frontend contributions'
+      ],
+      projects: [
+        {
+          name: 'Microservices Migration',
+          description: 'Migrated monolithic application to microservices using Python and Kubernetes',
+          technologies: ['Python', 'Kubernetes', 'Docker', 'PostgreSQL']
+        }
+      ]
     },
     {
-      id: 3,
+      id: '3',
       name: 'Emily Johnson',
       role: 'Frontend Developer',
+      title: 'Frontend Developer',
       experience: '3 years',
       location: 'Seattle, WA',
-      skills: ['React', 'JavaScript', 'CSS', 'Redux'],
+      skills: ['React', 'JavaScript', 'CSS', 'Redux', 'Jest'],
+      topMatchedSkills: ['React', 'JavaScript', 'Redux'],
+      skillGaps: ['TypeScript', 'GraphQL', 'AWS'],
       score: 88,
+      matchScore: 88,
       avatar: '/placeholder.svg',
       summary: 'Creative frontend developer passionate about user experience and modern web design.',
+      aiInsight: 'Strong frontend skills with excellent UX focus, needs backend exposure',
       email: 'emily.johnson@email.com',
       phone: '+1 (555) 345-6789',
-      status: 'Considering'
+      status: 'screened' as const,
+      company: 'MediumCorp',
+      education: 'BS Information Systems, UW',
+      source: 'Referral',
+      appliedDate: '2024-01-13',
+      availability: '1 month',
+      seniorityLevel: 'Mid-Level',
+      lastContact: '2024-01-18',
+      matchReasons: [
+        'Solid React and JavaScript foundation',
+        'Strong focus on user experience and design',
+        'Good testing practices with Jest'
+      ],
+      considerations: [
+        'Limited TypeScript experience',
+        'No GraphQL or AWS cloud experience',
+        'May need mentoring for backend integration'
+      ],
+      projects: [
+        {
+          name: 'Design System Implementation',
+          description: 'Built comprehensive React component library with design tokens',
+          technologies: ['React', 'JavaScript', 'Storybook', 'CSS-in-JS']
+        }
+      ]
     },
     {
-      id: 4,
+      id: '4',
       name: 'David Kim',
       role: 'React Developer',
+      title: 'React Developer',
       experience: '6 years',
       location: 'New York, NY',
-      skills: ['React', 'Next.js', 'TypeScript', 'MongoDB'],
+      skills: ['React', 'Next.js', 'TypeScript', 'MongoDB', 'Node.js'],
+      topMatchedSkills: ['React', 'TypeScript', 'Next.js'],
+      skillGaps: ['GraphQL'],
       score: 94,
+      matchScore: 94,
       avatar: '/placeholder.svg',
       summary: 'Senior React developer with extensive experience in building scalable web applications.',
+      aiInsight: 'Excellent React specialist with modern framework expertise and scalability focus',
       email: 'david.kim@email.com',
       phone: '+1 (555) 456-7890',
-      status: 'Available'
+      status: 'new' as const,
+      company: 'WebTech Solutions',
+      education: 'BS Computer Science, NYU',
+      source: 'GitHub',
+      appliedDate: '2024-01-16',
+      availability: 'Immediately',
+      seniorityLevel: 'Senior',
+      lastContact: undefined,
+      matchReasons: [
+        'Deep React expertise with 6 years specialized experience',
+        'Strong TypeScript skills for type-safe development',
+        'Next.js experience for SSR and performance optimization'
+      ],
+      considerations: [
+        'GraphQL experience would complement our API strategy'
+      ],
+      projects: [
+        {
+          name: 'Enterprise Dashboard Platform',
+          description: 'Built scalable React dashboard serving 10k+ daily users with Next.js',
+          technologies: ['React', 'Next.js', 'TypeScript', 'MongoDB']
+        }
+      ]
     }
   ]);
 
@@ -144,7 +260,55 @@ const RecruiterDashboard = () => {
     );
   };
 
+  const handleCandidateSelect = (candidateId: string) => {
+    setSelectedCandidates(prev => 
+      prev.includes(candidateId)
+        ? prev.filter(id => id !== candidateId)
+        : [...prev, candidateId]
+    );
+  };
+
   const candidatesToShow = searchQuery || selectedFilters.length > 0 ? filteredCandidates : mockCandidates;
+
+  // Sorting logic
+  const sortedCandidates = [...candidatesToShow].sort((a, b) => {
+    switch (sortBy) {
+      case 'matchScore':
+        return b.matchScore - a.matchScore;
+      case 'lastUpdated':
+        // Mock implementation - would use actual last_updated_timestamp
+        return new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime();
+      case 'dateAdded':
+        return new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime();
+      case 'lastContactedDesc':
+        // Mock implementation - would use actual last_contacted_timestamp
+        if (!a.lastContact && !b.lastContact) return 0;
+        if (!a.lastContact) return 1;
+        if (!b.lastContact) return -1;
+        return new Date(b.lastContact).getTime() - new Date(a.lastContact).getTime();
+      case 'lastContactedAsc':
+        if (!a.lastContact && !b.lastContact) return 0;
+        if (!a.lastContact) return -1;
+        if (!b.lastContact) return 1;
+        return new Date(a.lastContact).getTime() - new Date(b.lastContact).getTime();
+      case 'experienceYears':
+        return parseInt(b.experience) - parseInt(a.experience);
+      case 'seniorityLevel':
+        const seniorityOrder = { 'Principal': 5, 'Senior': 4, 'Mid-Level': 3, 'Junior': 2, 'Entry-Level': 1 };
+        return (seniorityOrder[b.seniorityLevel as keyof typeof seniorityOrder] || 0) - 
+               (seniorityOrder[a.seniorityLevel as keyof typeof seniorityOrder] || 0);
+      case 'availability':
+        const availabilityOrder = { 'Immediately': 1, '2 weeks': 2, '1 month': 3, '2+ months': 4 };
+        return (availabilityOrder[a.availability as keyof typeof availabilityOrder] || 999) - 
+               (availabilityOrder[b.availability as keyof typeof availabilityOrder] || 999);
+      case 'nameAsc':
+        return a.name.localeCompare(b.name);
+      case 'nameDesc':
+        return b.name.localeCompare(a.name);
+      default:
+        return b.matchScore - a.matchScore;
+    }
+  });
 
   const handleExtensiveFiltersApply = (filters: any) => {
     console.log('Extensive filters applied:', filters);
@@ -331,96 +495,53 @@ const RecruiterDashboard = () => {
               {/* Results Section */}
               <div className="flex-1 p-6 overflow-y-auto">
                 <div className="max-w-6xl mx-auto">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-800">
-                      {selectedFilters.length > 0 || searchQuery ? 'Search Results' : 'Top Candidates'} ({candidatesToShow.length} found)
-                    </h2>
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
-                      <span>Sorted by match score</span>
-                    </div>
-                  </div>
+                  <CandidateSortOptions
+                    sortBy={sortBy}
+                    onSortChange={setSortBy}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    candidateCount={sortedCandidates.length}
+                  />
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {candidatesToShow.map((candidate) => (
-                      <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 cursor-pointer border hover:border-blue-200">
-                        <CardHeader className="pb-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center space-x-4">
-                              <Avatar className="w-12 h-12">
-                                <AvatarImage src={candidate.avatar} />
-                                <AvatarFallback>{candidate.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <CardTitle className="text-lg">{candidate.name}</CardTitle>
-                                <CardDescription className="flex items-center space-x-4 text-sm">
-                                  <span className="flex items-center">
-                                    <Briefcase className="w-3 h-3 mr-1" />
-                                    {candidate.role}
-                                  </span>
-                                  <span className="flex items-center">
-                                    <Calendar className="w-3 h-3 mr-1" />
-                                    {candidate.experience}
-                                  </span>
-                                </CardDescription>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Button
-                                variant={shortlistedCandidates.includes(candidate.id.toString()) ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => toggleShortlist(candidate.id.toString())}
-                              >
-                                <Heart className={`w-4 h-4 ${shortlistedCandidates.includes(candidate.id.toString()) ? 'fill-current' : ''}`} />
-                              </Button>
-                              <div className="flex items-center space-x-1">
-                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                <span className="text-sm font-medium">{candidate.score}%</span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        
-                        <CardContent>
-                          <p className="text-sm text-gray-600 mb-4">{candidate.summary}</p>
-                          
-                          <div className="flex items-center space-x-2 mb-4">
-                            <MapPin className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm text-gray-600">{candidate.location}</span>
-                            <Badge variant="outline" className={`ml-auto ${
-                              candidate.status === 'Available' ? 'text-green-600 border-green-200' : 
-                              candidate.status === 'Considering' ? 'text-yellow-600 border-yellow-200' : 
-                              'text-gray-600 border-gray-200'
-                            }`}>
-                              {candidate.status}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {candidate.skills.map((skill, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
-                          
-                          <div className="flex space-x-2">
-                            <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                              <UserCheck className="w-4 h-4 mr-2" />
-                              View Profile
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Phone className="w-4 h-4 mr-2" />
-                              {candidate.phone}
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Mail className="w-4 h-4 mr-2" />
-                              Email
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
+                  <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'space-y-4'}`}>
+                    {sortedCandidates.map((candidate) => (
+                      <CandidateCard
+                        key={candidate.id}
+                        candidate={candidate}
+                        isSelected={selectedCandidates.includes(candidate.id)}
+                        onSelect={handleCandidateSelect}
+                        onShortlist={toggleShortlist}
+                        isShortlisted={shortlistedCandidates.includes(candidate.id)}
+                      />
                     ))}
                   </div>
+
+                  {/* Bulk Actions */}
+                  {selectedCandidates.length > 0 && (
+                    <Card className="bg-blue-50 border-blue-200 mt-6">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">
+                            {selectedCandidates.length} candidate(s) selected
+                          </span>
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              Bulk Email
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              Change Status
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              Export
+                            </Button>
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                              AI Pre-Screen
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </div>
             </TabsContent>
