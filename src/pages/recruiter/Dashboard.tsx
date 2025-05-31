@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Filter, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase } from 'lucide-react';
+import { Search, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase } from 'lucide-react';
+import RecruiterFilters from '@/components/RecruiterFilters';
 
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedFilters, setAppliedFilters] = useState<any>(null);
   const [chatHistory] = useState([
     'Frontend developer with React expertise',
     'Backend engineers with 3+ years Python',
@@ -64,6 +66,12 @@ const RecruiterDashboard = () => {
 
   const handleSearch = () => {
     console.log('Searching for:', searchQuery);
+    console.log('Applied filters:', appliedFilters);
+  };
+
+  const handleFiltersApply = (filters: any) => {
+    setAppliedFilters(filters);
+    console.log('Filters applied:', filters);
   };
 
   return (
@@ -157,10 +165,7 @@ const RecruiterDashboard = () => {
                 <Button onClick={handleSearch} className="h-12 px-8 bg-blue-600 hover:bg-blue-700">
                   Search
                 </Button>
-                <Button variant="outline" className="h-12">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters
-                </Button>
+                <RecruiterFilters onFiltersApply={handleFiltersApply} />
               </div>
             </div>
           </div>
