@@ -21,7 +21,7 @@ const ProfileSetup = () => {
   };
 
   const handleManualEntry = () => {
-    navigate('/candidate/profile-form/basic-info');
+    navigate('/candidate/basic-info');
   };
 
   const progressValue = ((currentStep + 1) / steps.length) * 100;
@@ -168,7 +168,7 @@ const ProfileSetup = () => {
                 </Button>
                 <Button 
                   className="bg-blue-600 hover:bg-blue-700"
-                  onClick={() => navigate('/candidate/profile-form/basic-info')}
+                  onClick={() => navigate('/candidate/basic-info')}
                 >
                   Review & Complete Profile
                   <ArrowRight className="w-4 h-4 ml-2" />
