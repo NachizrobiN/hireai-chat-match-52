@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +12,10 @@ import AnalyticsDashboard from '@/components/recruiter/AnalyticsDashboard';
 import PreScreeningSystem from '@/components/recruiter/candidate-ranking/PreScreeningSystem';
 import PersonalizedOutreach from '@/components/recruiter/candidate-ranking/PersonalizedOutreach';
 import WorkflowManagement from '@/components/recruiter/candidate-ranking/WorkflowManagement';
+import ResumeParser from '@/components/recruiter/ai-tools/ResumeParser';
+import SkillAssessment from '@/components/recruiter/ai-tools/SkillAssessment';
+import InterviewQuestions from '@/components/recruiter/ai-tools/InterviewQuestions';
+import BiasDetection from '@/components/recruiter/ai-tools/BiasDetection';
 
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -249,7 +252,7 @@ const RecruiterDashboard = () => {
         <div className="flex-1 flex flex-col">
           <Tabs defaultValue="search" className="flex-1 flex flex-col">
             <div className="border-b bg-white px-6 py-4">
-              <TabsList className="grid w-full max-w-3xl grid-cols-4">
+              <TabsList className="grid w-full max-w-4xl grid-cols-5">
                 <TabsTrigger value="search" className="flex items-center space-x-2">
                   <Search className="w-4 h-4" />
                   <span>Search Candidates</span>
@@ -265,6 +268,10 @@ const RecruiterDashboard = () => {
                 <TabsTrigger value="ai-tools" className="flex items-center space-x-2">
                   <Brain className="w-4 h-4" />
                   <span>AI Tools</span>
+                </TabsTrigger>
+                <TabsTrigger value="ranking" className="flex items-center space-x-2">
+                  <Target className="w-4 h-4" />
+                  <span>AI Ranking</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -438,58 +445,61 @@ const RecruiterDashboard = () => {
               <AnalyticsDashboard />
             </TabsContent>
 
-            <TabsContent value="ai-tools" className="flex-1 p-6 overflow-y-auto">
+            <TabsContent value="ai-tools" className="flex-1 overflow-y-auto">
+              <Tabs defaultValue="resume-parser" className="h-full">
+                <div className="border-b bg-white px-6 py-4">
+                  <TabsList className="grid w-full max-w-3xl grid-cols-4">
+                    <TabsTrigger value="resume-parser">Resume Parser</TabsTrigger>
+                    <TabsTrigger value="skill-assessment">Skill Assessment</TabsTrigger>
+                    <TabsTrigger value="interview-questions">Interview Questions</TabsTrigger>
+                    <TabsTrigger value="bias-detection">Bias Detection</TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="resume-parser" className="p-6">
+                  <ResumeParser />
+                </TabsContent>
+
+                <TabsContent value="skill-assessment" className="p-6">
+                  <SkillAssessment />
+                </TabsContent>
+
+                <TabsContent value="interview-questions" className="p-6">
+                  <InterviewQuestions />
+                </TabsContent>
+
+                <TabsContent value="bias-detection" className="p-6">
+                  <BiasDetection />
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+
+            <TabsContent value="ranking" className="flex-1 p-6 overflow-y-auto">
               <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">AI-Powered Tools</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-6">AI-Powered Candidate Ranking</h1>
                 <div className="grid md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Resume Parser</CardTitle>
-                      <CardDescription>Extract structured data from resumes automatically</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button className="w-full">
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload Resumes
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Skill Assessment</CardTitle>
-                      <CardDescription>AI-powered technical and soft skill evaluation</CardDescription>
+                      <CardTitle>Semantic Matching</CardTitle>
+                      <CardDescription>Advanced AI matching beyond keyword search</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <Button className="w-full">
                         <Brain className="w-4 h-4 mr-2" />
-                        Create Assessment
+                        Launch Matching Engine
                       </Button>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle>Interview Questions</CardTitle>
-                      <CardDescription>Generate customized questions based on role and candidate</CardDescription>
+                      <CardTitle>Candidate Comparison</CardTitle>
+                      <CardDescription>Side-by-side comparison with insights</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <Button className="w-full">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Generate Questions
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Bias Detection</CardTitle>
-                      <CardDescription>Ensure fair and unbiased hiring practices</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button className="w-full">
-                        <Target className="w-4 h-4 mr-2" />
-                        Analyze Process
+                        <Users className="w-4 h-4 mr-2" />
+                        Compare Candidates
                       </Button>
                     </CardContent>
                   </Card>
