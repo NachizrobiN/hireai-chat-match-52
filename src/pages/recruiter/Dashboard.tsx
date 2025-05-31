@@ -7,7 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Search, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase, BarChart3, Brain, Menu, Settings, LogOut, ChevronDown, Plus, X, Users, Target, Clock, Heart, Phone, Mail, UserCheck, ChevronUp } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Search, Upload, MessageSquare, Star, MapPin, Calendar, Briefcase, BarChart3, Brain, Menu, Settings, LogOut, ChevronDown, Plus, X, Users, Target, Clock, Heart, Phone, Mail, UserCheck, ChevronUp, Bell, HelpCircle, Sparkles, Grip } from 'lucide-react';
 import AnalyticsDashboard from '@/components/recruiter/AnalyticsDashboard';
 import PreScreeningSystem from '@/components/recruiter/candidate-ranking/PreScreeningSystem';
 import PersonalizedOutreach from '@/components/recruiter/candidate-ranking/PersonalizedOutreach';
@@ -24,7 +25,7 @@ import CandidateSortOptions from '@/components/recruiter/CandidateSortOptions';
 const RecruiterDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [workflowsOpen, setWorkflowsOpen] = useState(false);
+  const [workflowsOpen, setWorkflowsOpen] = useState(true);
   const [filteredCandidates, setFilteredCandidates] = useState<any[]>([]);
   const [shortlistedCandidates, setShortlistedCandidates] = useState<string[]>([]);
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
@@ -32,10 +33,10 @@ const RecruiterDashboard = () => {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
   const [workflows] = useState([
-    { id: '1', name: 'Frontend Developer Hiring', stage: 'Screening', candidates: 12 },
-    { id: '2', name: 'Backend Engineer Pipeline', stage: 'Interview', candidates: 8 },
-    { id: '3', name: 'Product Manager Search', stage: 'Offer', candidates: 3 },
-    { id: '4', name: 'UX Designer Outreach', stage: 'Sourcing', candidates: 15 },
+    { id: '1', name: 'Frontend Developer Hiring', stage: 'Screening', candidates: 12, activeCount: 3, totalCount: 12, progress: 25 },
+    { id: '2', name: 'Backend Engineer Pipeline', stage: 'Interview', candidates: 8, activeCount: 5, totalCount: 8, progress: 60 },
+    { id: '3', name: 'Product Manager Search', stage: 'Offer', candidates: 3, activeCount: 2, totalCount: 3, progress: 85 },
+    { id: '4', name: 'UX Designer Outreach', stage: 'Sourcing', candidates: 15, activeCount: 0, totalCount: 15, progress: 10 },
   ]);
 
   const [mockCandidates] = useState([
@@ -208,14 +209,28 @@ const RecruiterDashboard = () => {
     }
   ]);
 
-  const quickFilters = [
-    { name: 'Frontend', count: 24, active: false },
-    { name: 'Backend', count: 18, active: false },
-    { name: 'Full Stack', count: 15, active: false },
-    { name: 'Remote', count: 42, active: false },
-    { name: 'Senior', count: 12, active: false },
-    { name: 'Available', count: 38, active: false },
-  ];
+  const getContextualFilters = () => {
+    if (searchQuery.toLowerCase().includes('ml') || searchQuery.toLowerCase().includes('machine learning')) {
+      return [
+        { name: 'Python', count: 28, active: false },
+        { name: 'PyTorch', count: 15, active: false },
+        { name: 'TensorFlow', count: 22, active: false },
+        { name: 'AWS', count: 18, active: false },
+        { name: 'Senior', count: 12, active: false },
+        { name: 'Remote', count: 42, active: false },
+      ];
+    }
+    return [
+      { name: 'Frontend', count: 24, active: false },
+      { name: 'Backend', count: 18, active: false },
+      { name: 'Full Stack', count: 15, active: false },
+      { name: 'Remote', count: 42, active: false },
+      { name: 'Senior', count: 12, active: false },
+      { name: 'Available', count: 38, active: false },
+    ];
+  };
+
+  const quickFilters = getContextualFilters();
 
   const handleSearch = () => {
     console.log('Searching for:', searchQuery);
@@ -317,10 +332,10 @@ const RecruiterDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      {/* Enhanced Header */}
+      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">H</span>
             </div>
@@ -329,78 +344,92 @@ const RecruiterDashboard = () => {
             </span>
           </div>
           
+          {/* Enhanced Right Side */}
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Welcome back, Recruiter!</span>
+            <Button variant="ghost" size="sm" className="relative">
+              <Bell className="w-4 h-4" />
+              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs bg-red-500">
+                3
+              </Badge>
+            </Button>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Menu className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => window.location.href = '/recruiter/profile'}>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Profile Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Account Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => window.location.href = '/login'}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Log Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button variant="ghost" size="sm">
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              New Job
+            </Button>
+            
+            <span className="text-sm font-medium">Hi Alex!</span>
             
             <Avatar>
               <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback>R</AvatarFallback>
+              <AvatarFallback>AV</AvatarFallback>
             </Avatar>
           </div>
         </div>
       </header>
 
       <div className="flex h-[calc(100vh-73px)]">
-        {/* Sidebar */}
+        {/* Enhanced Sidebar */}
         <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+          {/* Workflows Section */}
           <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold mb-4">Workflows</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Workflows</h2>
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-1" />
+                Create New
+              </Button>
+            </div>
+            
             <Collapsible open={workflowsOpen} onOpenChange={setWorkflowsOpen}>
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                <Button variant="ghost" className="w-full justify-between p-0 h-auto mb-3">
                   <span className="text-sm font-medium">Active Workflows ({workflows.length})</span>
                   {workflowsOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </Button>
               </CollapsibleTrigger>
-              <CollapsibleContent className="space-y-2 mt-3">
+              <CollapsibleContent className="space-y-3">
                 {workflows.map((workflow) => (
-                  <Card key={workflow.id} className="p-3 hover:bg-gray-50 cursor-pointer">
+                  <Card key={workflow.id} className="p-3 hover:bg-gray-50 cursor-pointer group">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-sm font-medium truncate">{workflow.name}</h4>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <div className="flex items-center space-x-2">
+                        <Grip className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab" />
+                        <h4 className="text-sm font-medium truncate">{workflow.name}</h4>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
                         <X className="w-3 h-3" />
                       </Button>
                     </div>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>{workflow.stage}</span>
-                      <span>{workflow.candidates} candidates</span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="flex items-center space-x-1">
+                          <div className={`w-2 h-2 rounded-full ${
+                            workflow.stage === 'Screening' ? 'bg-yellow-400' :
+                            workflow.stage === 'Interview' ? 'bg-blue-400' :
+                            workflow.stage === 'Offer' ? 'bg-green-400' : 'bg-gray-400'
+                          }`} />
+                          <span>{workflow.stage}</span>
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          {workflow.activeCount}/{workflow.totalCount}
+                        </Badge>
+                      </div>
+                      <Progress value={workflow.progress} className="h-1" />
                     </div>
                   </Card>
                 ))}
-                <Button variant="outline" size="sm" className="w-full mt-2">
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Workflow
-                </Button>
               </CollapsibleContent>
             </Collapsible>
           </div>
           
-          <div className="p-6">
+          {/* Global Actions Section */}
+          <div className="p-6 border-b">
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-gray-700">Quick Actions</h3>
+              <h3 className="text-sm font-medium text-gray-700">Global Actions</h3>
               <div className="space-y-2">
                 <Button variant="outline" className="w-full justify-start" size="sm">
                   <Upload className="w-4 h-4 mr-2" />
@@ -412,9 +441,50 @@ const RecruiterDashboard = () => {
                 </Button>
                 <Button variant="outline" className="w-full justify-start" size="sm">
                   <Target className="w-4 h-4 mr-2" />
-                  Set Goals
+                  Manage Goals
                 </Button>
               </div>
+            </div>
+          </div>
+          
+          {/* Spacer */}
+          <div className="flex-1"></div>
+          
+          {/* Bottom Section - AI Copilot & Settings */}
+          <div className="p-6 border-t">
+            <div className="space-y-3">
+              {/* AI Copilot Status */}
+              <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-lg">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-blue-700 font-medium">AI Copilot Active</span>
+                <Sparkles className="w-4 h-4 text-blue-500" />
+              </div>
+              
+              {/* User Settings */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-start" size="sm">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                    <ChevronDown className="w-4 h-4 ml-auto" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem onClick={() => window.location.href = '/recruiter/profile'}>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Account Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => window.location.href = '/login'}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -422,15 +492,19 @@ const RecruiterDashboard = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           <Tabs defaultValue="search" className="flex-1 flex flex-col">
+            {/* Enhanced Top Tabs */}
             <div className="border-b bg-white px-6 py-4">
-              <TabsList className="grid w-full max-w-4xl grid-cols-5">
+              <TabsList className="grid w-full max-w-3xl grid-cols-4">
                 <TabsTrigger value="search" className="flex items-center space-x-2">
                   <Search className="w-4 h-4" />
                   <span>Search Candidates</span>
                 </TabsTrigger>
-                <TabsTrigger value="outreach" className="flex items-center space-x-2">
+                <TabsTrigger value="outreach" className="flex items-center space-x-2 relative">
                   <MessageSquare className="w-4 h-4" />
-                  <span>Outreach</span>
+                  <span>Communications</span>
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs bg-red-500">
+                    2
+                  </Badge>
                 </TabsTrigger>
                 <TabsTrigger value="analytics" className="flex items-center space-x-2">
                   <BarChart3 className="w-4 h-4" />
@@ -438,17 +512,13 @@ const RecruiterDashboard = () => {
                 </TabsTrigger>
                 <TabsTrigger value="ai-tools" className="flex items-center space-x-2">
                   <Brain className="w-4 h-4" />
-                  <span>AI Tools</span>
-                </TabsTrigger>
-                <TabsTrigger value="ranking" className="flex items-center space-x-2">
-                  <Target className="w-4 h-4" />
-                  <span>AI Ranking</span>
+                  <span>Copilot Features</span>
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value="search" className="flex-1 flex flex-col">
-              {/* Search Section */}
+              {/* Enhanced Search Section */}
               <div className="p-6 bg-white border-b">
                 <div className="max-w-4xl mx-auto">
                   <h1 className="text-2xl font-bold text-gray-800 mb-6">Find Your Perfect Candidate</h1>
@@ -463,6 +533,16 @@ const RecruiterDashboard = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                       />
+                      {/* Search History Indicator */}
+                      {searchQuery && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="absolute right-12 top-2 h-8 w-8 p-0"
+                        >
+                          <Clock className="w-4 h-4 text-gray-400" />
+                        </Button>
+                      )}
                     </div>
                     <ExtensiveFilters onFiltersApply={handleExtensiveFiltersApply} />
                     <Button variant="outline" className="h-12 px-6">
@@ -474,21 +554,44 @@ const RecruiterDashboard = () => {
                     </Button>
                   </div>
 
-                  {/* Quick Filters */}
+                  {/* Enhanced Quick Filters */}
                   <div className="flex flex-wrap gap-2">
                     {quickFilters.map((filter, index) => (
                       <Badge
                         key={index}
                         variant={selectedFilters.includes(filter.name) ? "default" : "outline"}
-                        className={`cursor-pointer hover:bg-gray-100 ${
-                          selectedFilters.includes(filter.name) ? 'bg-blue-600 text-white' : ''
+                        className={`cursor-pointer transition-all duration-200 ${
+                          selectedFilters.includes(filter.name) 
+                            ? 'bg-blue-600 text-white shadow-md' 
+                            : 'hover:bg-blue-50 hover:border-blue-300'
                         }`}
                         onClick={() => toggleFilter(filter.name)}
                       >
                         {filter.name} ({filter.count})
+                        {selectedFilters.includes(filter.name) && (
+                          <X className="w-3 h-3 ml-1" />
+                        )}
                       </Badge>
                     ))}
                   </div>
+
+                  {/* Applied Filters Display */}
+                  {selectedFilters.length > 0 && (
+                    <div className="mt-3 flex items-center space-x-2">
+                      <span className="text-sm text-gray-600">Active filters:</span>
+                      {selectedFilters.map((filter, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="secondary" 
+                          className="cursor-pointer"
+                          onClick={() => toggleFilter(filter)}
+                        >
+                          {filter}
+                          <X className="w-3 h-3 ml-1" />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -601,10 +704,6 @@ const RecruiterDashboard = () => {
                   <BiasDetection />
                 </TabsContent>
               </Tabs>
-            </TabsContent>
-
-            <TabsContent value="ranking" className="flex-1 p-6 overflow-y-auto">
-              <AIPoweredRanking />
             </TabsContent>
           </Tabs>
         </div>

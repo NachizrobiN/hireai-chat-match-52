@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Star, MapPin, Briefcase, GraduationCap, Heart, Phone, Mail, 
   MessageSquare, UserCheck, Eye, Calendar, Clock, CheckCircle, 
-  AlertTriangle, ExternalLink, FileText, Users, Target, Lightbulb 
+  AlertTriangle, ExternalLink, FileText, Users, Target, Lightbulb,
+  ThumbsDown, Zap, Award, Building
 } from 'lucide-react';
 
 interface Candidate {
@@ -63,54 +63,89 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getMatchScoreColor = (score: number) => {
-    if (score >= 85) return 'bg-green-500 text-white';
-    if (score >= 70) return 'bg-yellow-500 text-white';
-    return 'bg-red-500 text-white';
+    if (score >= 85) return 'bg-green-600 text-white border-green-600';
+    if (score >= 70) return 'bg-yellow-500 text-white border-yellow-500';
+    return 'bg-red-500 text-white border-red-500';
+  };
+
+  const getMatchScoreBackground = (score: number) => {
+    if (score >= 85) return 'bg-green-50 border-green-200';
+    if (score >= 70) return 'bg-yellow-50 border-yellow-200';
+    return 'bg-red-50 border-red-200';
   };
 
   const getStatusColor = (status: string) => {
     const colors = {
-      new: 'bg-blue-100 text-blue-800',
-      shortlisted: 'bg-yellow-100 text-yellow-800',
-      screened: 'bg-purple-100 text-purple-800',
-      interviewing: 'bg-orange-100 text-orange-800',
-      offer: 'bg-green-100 text-green-800',
-      hired: 'bg-green-200 text-green-900',
-      rejected: 'bg-red-100 text-red-800'
+      new: 'bg-blue-100 text-blue-800 border-blue-200',
+      shortlisted: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      screened: 'bg-purple-100 text-purple-800 border-purple-200',
+      interviewing: 'bg-orange-100 text-orange-800 border-orange-200',
+      offer: 'bg-green-100 text-green-800 border-green-200',
+      hired: 'bg-green-200 text-green-900 border-green-300',
+      rejected: 'bg-red-100 text-red-800 border-red-200'
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
+  const getSkillIcon = (skill: string) => {
+    const skillIcons: { [key: string]: string } = {
+      'React': '⚛️',
+      'TypeScript': '📘',
+      'JavaScript': '🟨',
+      'Python': '🐍',
+      'GraphQL': '📊',
+      'AWS': '☁️',
+      'Docker': '🐳',
+      'Kubernetes': '⎈',
+    };
+    return skillIcons[skill] || '🔧';
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer border hover:border-blue-200 group">
+    <Card className="hover:shadow-xl transition-all duration-300 cursor-pointer border hover:border-blue-300 group bg-white">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
-          {/* Checkbox for bulk actions */}
+          {/* Enhanced Checkbox */}
           <div className="flex items-center space-x-3">
             <input
               type="checkbox"
               checked={isSelected}
               onChange={() => onSelect(candidate.id)}
-              className="rounded w-4 h-4"
+              className="rounded w-4 h-4 border-2 border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            <Avatar className="w-12 h-12">
+            <Avatar className="w-14 h-14 border-2 border-white shadow-md">
               <AvatarImage src={candidate.avatar} />
-              <AvatarFallback>{candidate.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+              <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                {candidate.name.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
             </Avatar>
           </div>
 
-          <div className="flex-1 space-y-3">
-            {/* Header Section */}
+          <div className="flex-1 space-y-4">
+            {/* Enhanced Header Section */}
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 mb-2">
                   <Drawer open={isExpanded} onOpenChange={setIsExpanded}>
                     <DrawerTrigger asChild>
-                      <h3 className="text-lg font-semibold hover:text-blue-600 cursor-pointer">
+                      <h3 className="text-xl font-bold hover:text-blue-600 cursor-pointer transition-colors">
                         {candidate.name}
                       </h3>
                     </DrawerTrigger>
                     
+                    {/* ... keep existing code (drawer content) */}
                     <DrawerContent className="max-h-[90vh]">
                       <DrawerHeader>
                         <DrawerTitle className="flex items-center space-x-4">
@@ -159,12 +194,12 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Match Explanation Box */}
-                              <div className="bg-blue-50 rounded-lg p-4">
+                              {/* Enhanced Match Explanation Box */}
+                              <div className={`${getMatchScoreBackground(candidate.matchScore)} rounded-lg p-4 border`}>
                                 <div className="flex items-center space-x-2 mb-3">
                                   <Target className="w-5 h-5 text-blue-600" />
                                   <h4 className="font-semibold text-blue-800">Match Analysis</h4>
-                                  <Badge className={`${getMatchScoreColor(candidate.matchScore)} ml-auto`}>
+                                  <Badge className={`${getMatchScoreColor(candidate.matchScore)} ml-auto text-lg px-3 py-1`}>
                                     {candidate.matchScore}% Match
                                   </Badge>
                                 </div>
@@ -210,6 +245,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                             </div>
                           </TabsContent>
 
+                          {/* ... keep existing code (other tab contents) */}
                           <TabsContent value="experience" className="space-y-4">
                             <div className="space-y-4">
                               <h4 className="font-semibold">Professional Experience</h4>
@@ -323,111 +359,143 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
                     </DrawerContent>
                   </Drawer>
                   
-                  <Badge className={getStatusColor(candidate.status)}>
-                    {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
-                  </Badge>
+                  {/* Enhanced Status Badges */}
+                  <div className="flex items-center space-x-2">
+                    <Badge className={`${getStatusColor(candidate.status)} border`}>
+                      {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
+                    </Badge>
+                    {candidate.status === 'new' && (
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-200 animate-pulse">
+                        <Zap className="w-3 h-3 mr-1" />
+                        New
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 
-                <p className="text-gray-600 flex items-center space-x-4 mt-1">
-                  <span className="flex items-center">
-                    <Briefcase className="w-4 h-4 mr-1" />
-                    {candidate.title} at {candidate.company}
-                  </span>
-                  <span className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-1" />
+                {/* Enhanced Company & Role Info */}
+                <div className="space-y-1">
+                  <p className="text-gray-600 flex items-center space-x-4">
+                    <span className="flex items-center font-medium">
+                      <Briefcase className="w-4 h-4 mr-2 text-blue-500" />
+                      {candidate.title}
+                    </span>
+                    <span className="flex items-center">
+                      <Building className="w-4 h-4 mr-1 text-green-500" />
+                      {candidate.company}
+                    </span>
+                  </p>
+                  <p className="text-gray-500 flex items-center">
+                    <MapPin className="w-4 h-4 mr-1 text-orange-500" />
                     {candidate.location}
-                  </span>
-                </p>
-              </div>
-
-              <div className="text-right space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <Badge 
-                    className={`${getMatchScoreColor(candidate.matchScore)} cursor-pointer`}
-                    title={`Match Score: ${candidate.matchScore}% - ${candidate.aiInsight}`}
-                  >
-                    {candidate.matchScore}%
-                  </Badge>
+                  </p>
                 </div>
-                <Progress value={candidate.matchScore} className="w-24" />
+              </div>
+
+              {/* Enhanced Match Score Display */}
+              <div className="text-right space-y-3">
+                <div className="flex flex-col items-end space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    <Badge 
+                      className={`${getMatchScoreColor(candidate.matchScore)} cursor-pointer text-lg px-3 py-1 shadow-md`}
+                      title={`Match Score: ${candidate.matchScore}% - ${candidate.aiInsight}`}
+                    >
+                      {candidate.matchScore}%
+                    </Badge>
+                  </div>
+                  <Progress value={candidate.matchScore} className="w-28 h-2" />
+                  <span className="text-xs text-gray-500">
+                    {candidate.matchScore >= 85 ? 'Excellent' : candidate.matchScore >= 70 ? 'Good' : 'Fair'} Match
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* AI-Generated Summary */}
-            <div className="bg-blue-50 rounded-lg p-3">
+            {/* Enhanced AI-Generated Summary */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
               <div className="flex items-start space-x-2">
-                <Lightbulb className="w-4 h-4 text-blue-600 mt-0.5" />
-                <p className="text-sm text-blue-700">{candidate.aiInsight}</p>
+                <Lightbulb className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-blue-800 mb-1">AI Insight</p>
+                  <p className="text-sm text-blue-700">{candidate.aiInsight}</p>
+                </div>
               </div>
             </div>
 
-            {/* Top Matched Skills */}
+            {/* Enhanced Top Matched Skills */}
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">Top Matched Skills</h5>
-              <div className="flex flex-wrap gap-1">
+              <h5 className="text-sm font-medium text-gray-700 mb-3">Top Matched Skills</h5>
+              <div className="flex flex-wrap gap-2">
                 {candidate.topMatchedSkills.map((skill, index) => (
                   <Badge 
                     key={index} 
-                    className="bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer"
+                    className="bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer transition-colors border border-green-300 shadow-sm"
                     onClick={() => console.log(`Filter by ${skill}`)}
                   >
+                    <span className="mr-1">{getSkillIcon(skill)}</span>
                     ✓ {skill}
                   </Badge>
                 ))}
               </div>
             </div>
 
-            {/* Quick Facts */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div className="flex items-center space-x-1">
-                <GraduationCap className="w-4 h-4 text-gray-400" />
-                <span>{candidate.experience}</span>
+            {/* Enhanced Quick Facts */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-gray-50 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <GraduationCap className="w-4 h-4 text-purple-500" />
+                <span className="font-medium">{candidate.experience}</span>
               </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="w-4 h-4 text-gray-400" />
-                <span>{candidate.availability}</span>
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4 text-green-500" />
+                <span className="font-medium">{candidate.availability}</span>
               </div>
-              <div className="flex items-center space-x-1">
-                <Users className="w-4 h-4 text-gray-400" />
-                <span>{candidate.seniorityLevel}</span>
+              <div className="flex items-center space-x-2">
+                <Users className="w-4 h-4 text-blue-500" />
+                <span className="font-medium">{candidate.seniorityLevel}</span>
               </div>
-              <div className="flex items-center space-x-1">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span>{candidate.appliedDate}</span>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-orange-500" />
+                <span className="font-medium">{formatDate(candidate.appliedDate)}</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-between items-center pt-2 border-t opacity-60 group-hover:opacity-100 transition-opacity">
+            {/* Enhanced Action Buttons */}
+            <div className="flex justify-between items-center pt-4 border-t opacity-70 group-hover:opacity-100 transition-opacity">
               <div className="flex space-x-2">
                 <Button
                   size="sm"
                   variant={isShortlisted ? "default" : "outline"}
                   onClick={() => onShortlist(candidate.id)}
-                  className="flex items-center space-x-1"
+                  className={`flex items-center space-x-1 transition-all ${
+                    isShortlisted ? 'bg-red-500 hover:bg-red-600' : 'hover:bg-red-50 hover:border-red-300'
+                  }`}
                 >
                   <Heart className={`w-4 h-4 ${isShortlisted ? 'fill-current' : ''}`} />
-                  <span>Shortlist</span>
+                  <span>{isShortlisted ? 'Shortlisted' : 'Shortlist'}</span>
                 </Button>
                 
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" className="hover:bg-purple-50 hover:border-purple-300">
                   <UserCheck className="w-4 h-4 mr-1" />
-                  Screening
+                  Screen
                 </Button>
                 
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" className="hover:bg-blue-50 hover:border-blue-300">
                   <MessageSquare className="w-4 h-4 mr-1" />
-                  Outreach
+                  Message
                 </Button>
               </div>
 
               <div className="flex space-x-2">
-                <Button size="sm" variant="outline">
-                  <Eye className="w-4 h-4 mr-1" />
-                  View Profile
+                <Button size="sm" variant="outline" className="hover:bg-gray-50">
+                  <ThumbsDown className="w-4 h-4 mr-1" />
+                  Decline
                 </Button>
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Button size="sm" variant="outline" className="hover:bg-green-50 hover:border-green-300">
+                  <Eye className="w-4 h-4 mr-1" />
+                  Profile
+                </Button>
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 shadow-md">
                   Compare
                 </Button>
               </div>
