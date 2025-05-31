@@ -92,6 +92,13 @@ const RecruiterDashboard = () => {
           
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600">Welcome back, Recruiter!</span>
+            <Button 
+              variant="ghost" 
+              onClick={() => window.location.href = '/recruiter/profile'}
+              className="text-sm"
+            >
+              Profile Settings
+            </Button>
             <Avatar>
               <AvatarImage src="/placeholder.svg" />
               <AvatarFallback>R</AvatarFallback>
